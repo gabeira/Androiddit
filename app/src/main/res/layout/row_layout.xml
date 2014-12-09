@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="100dp">
+    android:layout_height="wrap_content"
+    android:background="@color/bright_foreground_material_dark"
+    android:minHeight="90dp">
 
     <ImageView
         android:id="@+id/thumbnail"
@@ -13,8 +15,45 @@
         android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:lines="2"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@+id/thumbnail"
+
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:id="@+id/creation_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_toEndOf="@+id/thumbnail"
+        android:text="@string/empty"
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/labelHours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@+id/creation_date"
+        android:text="@string/hours_ago"
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/labelBy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@+id/labelHours"
+        android:text="@string/by"
+        android:textColor="@android:color/primary_text_light"
         android:textSize="14sp" />
 
     <TextView
@@ -22,15 +61,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
-        android:layout_toRightOf="@+id/thumbnail"
-        android:textSize="14sp" />
-
-    <TextView
-        android:id="@+id/creation_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/author"
-        android:layout_toRightOf="@+id/thumbnail"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@+id/labelBy"
+        android:text="@string/empty"
+        android:textColor="@android:color/primary_text_light"
         android:textSize="14sp" />
 
     <TextView
@@ -38,7 +72,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/creation_date"
-        android:layout_toRightOf="@+id/thumbnail"
+        android:layout_toEndOf="@+id/thumbnail"
+        android:text="@string/empty"
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="14sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/creation_date"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_toEndOf="@+id/number_comments"
+        android:text="@string/comments"
+        android:textColor="@android:color/primary_text_light"
         android:textSize="14sp" />
 
 </RelativeLayout>

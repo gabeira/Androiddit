@@ -1,4 +1,4 @@
-package br.com.androiddit;
+package br.com.androiddit.data;
 
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
@@ -6,20 +6,22 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by gabrielbernardopereira on 12/2/14.
  */
-public class RedditEntry {
+public class Reddit {
 
+    Long id;
     String title;
     String author;
-    Long creationDate;
+    Long created;
     String thumbnail;
+    String url;
     Integer numberOfComments;
 
-    public RedditEntry() {}
+    public Reddit() {}
 
-    public RedditEntry(String title, String author, Long creationDate, String thumbnail, Integer numberOfComments) {
+    public Reddit(String title, String author, Long creationDate, String thumbnail, Integer numberOfComments) {
         this.title = title;
         this.author = author;
-        this.creationDate = creationDate;
+        this.created = creationDate;
         this.thumbnail = thumbnail;
         this.numberOfComments = numberOfComments;
     }
@@ -32,12 +34,12 @@ public class RedditEntry {
         return author;
     }
 
-    public Long getCreationDate() {
-        return creationDate;
+    public Long getCreated() {
+        return created;
     }
 
     public Long getHoursFromCreation(){
-        return TimeUnit.HOURS.convert(Calendar.getInstance().getTimeInMillis() - (creationDate * 1000l),TimeUnit.MILLISECONDS);
+        return TimeUnit.HOURS.convert(Calendar.getInstance().getTimeInMillis() - (created * 1000l),TimeUnit.MILLISECONDS);
     }
 
     public String getThumbnail() {
@@ -56,8 +58,8 @@ public class RedditEntry {
         this.author = author;
     }
 
-    public void setCreationDate(Long creationDate) {
-        this.creationDate = creationDate;
+    public void setCreated(Long created) {
+        this.created = created;
     }
 
     public void setThumbnail(String thumbnail) {
@@ -68,4 +70,19 @@ public class RedditEntry {
         this.numberOfComments = numberOfComments;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
