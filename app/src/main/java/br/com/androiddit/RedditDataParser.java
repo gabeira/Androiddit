@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.androiddit.data.Page;
 import br.com.androiddit.data.Reddit;
 
 /**
@@ -16,8 +17,11 @@ import br.com.androiddit.data.Reddit;
  */
 public class RedditDataParser {
 
+    String after;
 
-    public static List<Reddit> parseReddit(String response) {
+    public static Page parseReddit(String response) {
+
+        Page page = new Page();
 
         List<Reddit> redditEntries = new ArrayList<>();
         try {
@@ -26,17 +30,23 @@ public class RedditDataParser {
             JSONArray children = data.getJSONArray("children");
 
             for (int i = 0; i < children.length(); i++) {
-                JSONObject dataObj = children.getJSONObject(i).getJSONObject("data");
-                Reddit entry = new Reddit();
-                entry.setTitle(dataObj.getString("title"));
-                entry.setAuthor(dataObj.getString("author"));
-                entry.setThumbnail(dataObj.getString("thumbnail"));
-                entry.setCreated(dataObj.getLong("created_utc"));
-                entry.setNumberOfComments(dataObj.getInt("num_comments"));
-                redditEntries.add(entry);
+                try {
+                    JSONObject dataObj = children.getJSONObject(i).getJSONObject("data");
+                    Reddit entry = new Reddit();
+                    entry.setTitle(dataObj.getString("title"));
+                    entry.setAuthor(dataObj.getString("author"));
+                    entry.setThumbnail(dataObj.getString("thumbnail"));
+                    entry.setCreated(dataObj.getLong("created_utc"));
+                    entry.setNumberOfComments(dataObj.getInt("num_comments"));
+                    redditEntries.add(entry);
+                }catch (Exception e){
+                    Log.e("REDDIT",
+                            ">>> Error => " + e.getLocalizedMessage());
+                }
             }
-            Log.i("REDDIT", "Entries size:" + redditEntries.size()+" after:"+data.getString("after"));
-
+page.setAfter(data.getString("after"));
+            Log.i("REDDIT", ">>>>Entries size:" + redditEntries.size()+" after:"+data.getString("after"));
+page.setReddits(redditEntries);
 
         } catch (JSONException e) {
             Log.e("REDDIT",
@@ -44,6 +54,7 @@ public class RedditDataParser {
             e.printStackTrace();
         }
 
-        return redditEntries;
+        return page;
     }
+
 }

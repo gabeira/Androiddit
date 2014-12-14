@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Androiddit</string>
+    <string name="action_settings">Configuraciones</string>
+
+    <string name="hours_ago">horas</string>
+    <string name="by">por</string>
+    <string name="comments">comentarios</string>
+    <string name="new_reddits">Obtener nuevos Reddits Android</string>
+    <string name="load_reddits">Cargando Más 10 Reddits ...</string>
+
+</resources>

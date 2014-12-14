@@ -26,13 +26,9 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.2'
+    compile 'com.android.support:appcompat-v7:21.0.3'
 
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
-//    compile 'com.github.jreddit:jreddit:1.0.0'
-//    compile 'httpcomponents-httpcore:httpcore:4.0-alpha6'
-//    compile 'org.apache.commons:commons-io:1.3.2'
-//    compile 'name.pehl:piriti-restlet:0.8'
-//    compile 'me.neavo:volley:2014.11.25'
+    compile 'com.makeramen:roundedimageview:1.5.0'
 
 }

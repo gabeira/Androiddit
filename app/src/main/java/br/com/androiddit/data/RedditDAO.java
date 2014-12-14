@@ -35,9 +35,26 @@ public class RedditDAO implements BaseColumns {
 
     public RedditDAO(Context ctx) {
         db = ctx.openOrCreateDatabase(RedditDbHelper.DATABASE_NAME, Context.MODE_PRIVATE, null);
+        dbHelper = new RedditDbHelper(ctx);
     }
 
     protected RedditDAO() {}
+
+    private RedditDbHelper dbHelper;
+
+//    public RedditDAO(Context context) {
+//        dbHelper = new RedditDbHelper(context);
+//    }
+
+    public void open() throws SQLException {
+        db = dbHelper.getWritableDatabase();
+    }
+
+    public void close() {
+        if (dbHelper != null) {
+            dbHelper.close();
+        }
+    }
 
     public long insert(Reddit reddit) {
         ContentValues redditValues = new ContentValues();
@@ -52,7 +69,7 @@ public class RedditDAO implements BaseColumns {
         return id;
     }
 
-    public long insert(ContentValues redditValues) {
+    private long insert(ContentValues redditValues) {
         long id = db.insert(TABLE_NAME, "", redditValues);
         return id;
     }
@@ -60,9 +77,12 @@ public class RedditDAO implements BaseColumns {
     public Cursor getCursor() {
         try {
             // select * from tickets
-            return db.query(TABLE_NAME, null, null, null, null, null, null, null);
+//            return db.query(TABLE_NAME, null, null, null, null, null, null, null);
+
+            return dbHelper.getReadableDatabase().rawQuery("select * from reddits",null);
+
         } catch (SQLException e) {
-            Log.e(LOG_TAG, "Erro ao buscar os tickets: " + e.toString());
+            Log.e(LOG_TAG, "Error: " + e.toString());
             return null;
         }
     }
@@ -71,7 +91,7 @@ public class RedditDAO implements BaseColumns {
         Cursor c = getCursor();
         List<Reddit> reddits = new ArrayList<Reddit>();
         if (c.moveToFirst()) {
-            int idxId = c.getColumnIndex(COLUMN_REDDIT_ID);
+            int idxId = c.getColumnIndex(_ID);
             int idxTitle = c.getColumnIndex(COLUMN_TITLE);
             int idxAuthor = c.getColumnIndex(COLUMN_AUTHOR);
             int idxCreated = c.getColumnIndex(COLUMN_CREATED);
@@ -80,19 +100,44 @@ public class RedditDAO implements BaseColumns {
             int idxUrl = c.getColumnIndex(COLUMN_URL);
             do {
                 Reddit r = new Reddit();
-                reddits.add(r);
-                r.setId(c.getLong(idxId));
+                r.setId(c.getInt(idxId));
                 r.setTitle(c.getString(idxTitle));
                 r.setAuthor(c.getString(idxAuthor));
                 r.setCreated(c.getLong(idxCreated));
                 r.setNumberOfComments(c.getInt(idxNumComments));
                 r.setThumbnail(c.getString(idxThumb));
                 r.setUrl(c.getString(idxUrl));
+                reddits.add(r);
             } while (c.moveToNext());
         }
         return reddits;
     }
+    public List<Reddit> getAllReddits() {
+        List<Reddit> comments = new ArrayList<Reddit>();
 
+        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+//            Comment comment = cursorToComment(cursor);
+//
+//            Reddit r = new Reddit();
+//            r.setId(c.getLong(idxId));
+//            r.setTitle(c.getString(idxTitle));
+//            r.setAuthor(c.getString(idxAuthor));
+//            r.setCreated(c.getLong(idxCreated));
+//            r.setNumberOfComments(c.getInt(idxNumComments));
+//            r.setThumbnail(c.getString(idxThumb));
+//            r.setUrl(c.getString(idxUrl));
+//            reddits.add(r);
+//
+//            comments.add(comment);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        return comments;
+    }
     public void setRedditList(List<Reddit> reddits){
         for (Reddit r : reddits) {
             insert(r);
@@ -101,16 +146,14 @@ public class RedditDAO implements BaseColumns {
 
     }
 
+    public void deleteAllReddits() {
+        System.out.println(db.delete(TABLE_NAME,null, null)+ " Reddits deleted");
+    }
+
     public Cursor query(SQLiteQueryBuilder queryBuilder, String[] projection, String selection, String[] selectionArgs,
                         String groupBy, String having, String orderBy) {
         Cursor c = queryBuilder.query(this.db, projection, selection, selectionArgs, groupBy, having, orderBy);
         return c;
     }
 
-    public void closeDB() {
-        // fecha o banco de dados
-        if (db != null) {
-            db.close();
-        }
-    }
 }

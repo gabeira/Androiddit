@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Reddit {
 
-    Long id;
+    Integer id;
     String title;
     String author;
     Long created;
@@ -78,11 +78,11 @@ public class Reddit {
         this.url = url;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 }

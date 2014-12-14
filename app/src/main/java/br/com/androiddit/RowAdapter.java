@@ -3,14 +3,13 @@ package br.com.androiddit;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
@@ -30,6 +29,10 @@ public class RowAdapter extends ArrayAdapter<String> {
         this.entries = values;
     }
 
+    public void addEntries(List<Reddit> _entries) {
+        this.entries.addAll(_entries);
+    }
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context
@@ -47,23 +50,11 @@ public class RowAdapter extends ArrayAdapter<String> {
         TextView textViewNumberComments = (TextView) rowView.findViewById(R.id.number_comments);
         textViewNumberComments.setText(entries.get(position).getNumberOfComments().toString());
 
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.thumbnail);
+        RoundedImageView imageView = (RoundedImageView) rowView.findViewById(R.id.thumbnail);
         final String thumb = entries.get(position).getThumbnail();
         if (null != thumb && !thumb.isEmpty() && !thumb.equals("self") && !thumb.equals("default")) {
             try {
-                Log.i("IMAGELOADD","thumb:"+thumb);
-
                 ImageLoader.getInstance().displayImage(thumb, imageView);
-
-                // Load image, decode it to Bitmap and return Bitmap to callback
-//        imageLoader.loadImage(imageUri, new SimpleImageLoadingListener() {
-//            @Override
-//            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//                // Do whatever you want with Bitmap
-//            }
-//        });
-//        imageView.setImageResource(R.drawable.ic_launcher);
-
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -73,8 +64,9 @@ public class RowAdapter extends ArrayAdapter<String> {
                         context.getApplicationContext().startActivity(i);
                     }
                 });
-            }catch (Exception e){}
-        }else{
+            } catch (Exception e) {
+            }
+        } else {
             ImageLoader.getInstance().displayImage("http://www.redditstatic.com/icon-touch.png", imageView);
         }
         return rowView;
