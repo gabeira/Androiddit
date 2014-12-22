@@ -208,7 +208,8 @@ public class MainActivity extends ActionBarActivity implements TaskFinishListene
 
         if (null == after || after.isEmpty()){
             redditDAO.deleteAllReddits();
-            adapter.clear();
+            if (null != adapter)
+                adapter.clear();
         }
 
         FetchRedditTask fetchRedditTask = new FetchRedditTask();
