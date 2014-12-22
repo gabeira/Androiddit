@@ -147,7 +147,11 @@ public class RedditDAO implements BaseColumns {
     }
 
     public void deleteAllReddits() {
-        System.out.println(db.delete(TABLE_NAME,null, null)+ " Reddits deleted");
+        try {
+            System.out.println(db.delete(TABLE_NAME, null, null) + " Reddits deleted");
+
+        } catch (Exception e) {
+        }
     }
 
     public Cursor query(SQLiteQueryBuilder queryBuilder, String[] projection, String selection, String[] selectionArgs,

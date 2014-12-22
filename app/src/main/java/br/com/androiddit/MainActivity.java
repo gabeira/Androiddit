@@ -1,5 +1,6 @@
 package br.com.androiddit;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -34,54 +35,57 @@ public class MainActivity extends ActionBarActivity implements TaskFinishListene
     String afterLoad;
     int pageLoaded;
     private boolean loading;
+    private static SharedPreferences.Editor editor;
+    private static SharedPreferences sharedPreferences;
 
     @Override
     protected void onStart() {
         super.onStart();
-//        Toast.makeText(this,"onStart",Toast.LENGTH_SHORT).show();
-        //getAppState
-
         redditDAO.open();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-//        Toast.makeText(this,"onRestart",Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        Toast.makeText(this,"onResume",Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-//        Toast.makeText(this,"onPause",Toast.LENGTH_SHORT).show();
-        //startRecordState
-
+        MainActivity.editor.putInt("position", listView.getFirstVisiblePosition());
+        MainActivity.editor.commit();
         redditDAO.close();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-//        Toast.makeText(this,"onStop",Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        Toast.makeText(this,"onDestroy",Toast.LENGTH_SHORT).show();
     }
+
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        MainActivity.editor.putInt("position", listView.getLastVisiblePosition());
+//        MainActivity.editor.commit();
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        MainActivity.sharedPreferences = this.getSharedPreferences("redlist",0);
+        MainActivity.editor = MainActivity.sharedPreferences.edit();
 
         redditDAO = new RedditDAO(getApplicationContext());
 
@@ -92,6 +96,10 @@ public class MainActivity extends ActionBarActivity implements TaskFinishListene
             @Override
             public void onRefresh() {
                 Toast.makeText(getApplicationContext(), getString(R.string.new_reddits), Toast.LENGTH_SHORT).show();
+
+                MainActivity.editor.putInt("position", 0);
+                MainActivity.editor.commit();
+
                 getRedditsTask(null);
             }
         });
@@ -129,81 +137,25 @@ public class MainActivity extends ActionBarActivity implements TaskFinishListene
             public void onBottomReached() {
                 if (!loading && pageLoaded<4) {
                     loading = true;
-                    Toast.makeText(getApplicationContext(),pageLoaded+" "+getString(R.string.load_reddits),Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),getString(R.string.load_reddits)+" "+adapter.getCount(),Toast.LENGTH_LONG).show();
                     pageLoaded++;
                     getRedditsTask(afterLoad);
                 }
             }
         });
-//        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
-//
-//            @Override
-//            public void onScrollStateChanged(AbsListView view, int scrollState) {
-//
-////                if (scrollState == SCROLL_STATE_FLING) {
-////                    Log.d("Scroll", "The user had previously been scrolling using touch and had performed a fling.");
-////
-////                } else if (scrollState == SCROLL_STATE_IDLE) {
-////                    Log.d("Scroll", "The view is not scrolling.");
-////
-////                } else if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
-////                    Log.d("Scroll", "Scrolling using touch, and their finger is still on the screen");
-////                }
-//
-//                if (view.getId() == listView.getId()) {
-//                    final int currentFirstVisibleItem = listView.getFirstVisiblePosition();
-//
-//                    if (currentFirstVisibleItem > mLastFirstVisibleItem) {
-//                        mIsScrollingUp = false;
-//                    } else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
-//                        mIsScrollingUp = true;
-//                    }
-//
-//                    mLastFirstVisibleItem = currentFirstVisibleItem;
-//                }
-//            }
-//
-//            @Override
-//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-////                Log.w("Scroll","onScroll firstVisibleItem=" +firstVisibleItem + " visibleItemCount="+visibleItemCount+" totalItemCount"+totalItemCount);
-//
-//                if (firstVisibleItem > 1 && firstVisibleItem > (totalItemCount - visibleItemCount) - 1) {
-//
-//
-//                    Log.w("Scroll", firstVisibleItem + "Loading..." + mIsScrollingUp);
-//
-////                    FetchRedditTask fetchRedditTask = new FetchRedditTask();
-////                    fetchRedditTask.setListener(MainActivity.this);
-////                    fetchRedditTask.execute(afterLoad);
-//
-//                }
-//            }
-//
-////            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-////                this.currentFirstVisibleItem = firstVisibleItem;
-////                this.currentVisibleItemCount = visibleItemCount;
-////            }
-////
-////            public void onScrollStateChanged(AbsListView view, int scrollState) {
-////                this.currentScrollState = scrollState;
-////                this.isScrollCompleted();
-////            }
-////
-////            private void isScrollCompleted() {
-////                if (this.currentVisibleItemCount > 0 && this.currentScrollState == SCROLL_STATE_IDLE) {
-////                    /*** In this way I detect if there's been a scroll which has completed ***/
-////                    /*** do the work for load more date! ***/
-////                    if(!isLoading){
-////                        isLoading = true;
-////                        loadMoreData();
-////                    }
-////                }
-////            }
-//
-//        });
 
-        getRedditsTask(null);
+        if (null != sharedPreferences && sharedPreferences.getInt("position",0) > 0) {
+            adapter = new RowAdapter(getApplicationContext(), redditDAO.getRedditList());
+            listView.setAdapter(adapter);
+            listView.refreshDrawableState();
+            loading = false;
 
+            listView.setSelection(sharedPreferences.getInt("position", 0));
+            Toast.makeText(getApplicationContext(),getString(R.string.load_reddits_fromdb),Toast.LENGTH_LONG).show();
+
+        }else {
+            getRedditsTask(null);
+        }
 
     }
 
@@ -223,9 +175,8 @@ public class MainActivity extends ActionBarActivity implements TaskFinishListene
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Toast.makeText(getApplicationContext(), adapter.getCount()+" DB has " + redditDAO.getRedditList().size(), Toast.LENGTH_SHORT).show();
-
+        if (id == R.id.action_refresh) {
+            getRedditsTask(null);
             return true;
         }
 
@@ -248,15 +199,21 @@ public class MainActivity extends ActionBarActivity implements TaskFinishListene
         afterLoad = page.getAfter();
         listView.refreshDrawableState();
 
-        redditDAO.deleteAllReddits();
         redditDAO.setRedditList(page.getReddits());
 
         swipeRefreshLayout.setRefreshing(false);
     }
 
     public void getRedditsTask(String after){
+
+        if (null == after || after.isEmpty()){
+            redditDAO.deleteAllReddits();
+            adapter.clear();
+        }
+
         FetchRedditTask fetchRedditTask = new FetchRedditTask();
         fetchRedditTask.setListener(MainActivity.this);
         fetchRedditTask.execute(after);
+
     }
 }

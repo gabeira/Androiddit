@@ -2,13 +2,14 @@
 <resources>
 
     <string name="app_name">Androiddit</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_refresh">Refresh</string>
 
     <string name="hours_ago">hours ago</string>
     <string name="by">by</string>
     <string name="comments">comments</string>
     <string name="new_reddits">Getting new Android Reddits</string>
-    <string name="load_reddits">Loading More 10 Reddits ...</string>
+    <string name="load_reddits">Loading More 10 Reddits of </string>
+    <string name="load_reddits_fromdb">Reddits loaded from last session</string>
 
     <string name="empty" translate="false">_</string>
 

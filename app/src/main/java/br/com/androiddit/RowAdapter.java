@@ -67,7 +67,7 @@ public class RowAdapter extends ArrayAdapter<String> {
             } catch (Exception e) {
             }
         } else {
-            ImageLoader.getInstance().displayImage("http://www.redditstatic.com/icon-touch.png", imageView);
+            imageView.setImageResource(R.drawable.icon_touch);
         }
         return rowView;
     }
