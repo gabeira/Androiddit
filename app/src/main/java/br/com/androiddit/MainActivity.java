@@ -1,5 +1,6 @@
 package br.com.androiddit;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -24,7 +25,7 @@ import br.com.androiddit.data.Page;
 import br.com.androiddit.data.RedditDAO;
 import br.com.androiddit.interfaces.TaskFinishListener;
 
-public class MainActivity extends ActionBarActivity implements TaskFinishListener {
+public class MainActivity extends Activity implements TaskFinishListener {
 
     ScrollListView listView;
     SwipeRefreshLayout swipeRefreshLayout;
